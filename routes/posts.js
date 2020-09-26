@@ -1,13 +1,16 @@
 const router = require('express').Router();
 const Post = require('../models/Post');
 const { postValidation } = require('../validation');
+const { getAllPosts } = require('../services/postService');
 
 router.get('/', async (request, response) => {
   try {
-    const posts = await Post.find();
-    response.status(200).send(posts);
+    const page = request.query.page || 1;
+    const posts = await getAllPosts(parseInt(page));
+
+    response.status(200).json(posts);
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).json(error);
   }
 });
 
